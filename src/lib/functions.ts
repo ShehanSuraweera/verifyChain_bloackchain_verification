@@ -8,7 +8,7 @@ export const generatePDFCertificate = async (data: {
   fileHash: string;
   txHash: string;
   timestamp: string;
-  walletAddress: string;
+  walletHash: string;
   explorerUrl: string;
 }) => {
   const pdfDoc = await PDFDocument.create();
@@ -101,8 +101,8 @@ export const generatePDFCertificate = async (data: {
       color: accentColor,
     },
     {
-      label: "Wallet Address",
-      value: data.walletAddress,
+      label: "Wallet Hash (SHA-256)",
+      value: data.walletHash,
       small: true,
       color: accentColor,
     },

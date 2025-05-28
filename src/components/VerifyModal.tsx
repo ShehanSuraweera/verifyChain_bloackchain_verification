@@ -78,22 +78,44 @@ const VerifyModal = ({ open, onOpenChange }: VerifyModalProps) => {
         return;
       }
 
+      // const data = await res.json();
+      // const certificateHash = Array.isArray(data)
+      //   ? data.find((entry: any) => entry.label === "674")?.json_metadata
+      //       ?.verifychain?.hash
+      //   : null;
+
+      // const isValid = certificateHash === hash;
+
       const data = await res.json();
-      const certificateHash = Array.isArray(data)
-        ? data.find((entry: any) => entry.label === "721")?.json_metadata
-            ?.certificate?.hash
+      const metadataEntry = Array.isArray(data)
+        ? data.find((entry: any) => entry.label === "674")
         : null;
 
+      const metadata = metadataEntry?.json_metadata?.verifychain;
+
+      if (!metadata) {
+        toast({
+          title: "Metadata Not Found",
+          description: "VerifyChain metadata not present in this transaction.",
+          variant: "destructive",
+          className: "bg-white",
+        });
+        return;
+      }
+
+      const certificateHash = metadata.hash;
       const isValid = certificateHash === hash;
 
       setVerificationResult({
         isValid,
         status: isValid ? "Valid" : "Invalid",
-        title: "Uploaded Certificate",
+        title: metadata.title || "Unknown",
         issuer: "Verified via Blockchain",
-        issueDate: "Unknown",
+        type: metadata.type || "Unknown",
+        issueDate: metadata.timestamp || "Unknown",
         verificationDate: new Date().toISOString(),
         blockchainHash: certificateHash || "N/A",
+        walletHash: metadata.walletHash,
       });
     } catch (err) {
       console.log(err);
@@ -260,7 +282,17 @@ const VerifyModal = ({ open, onOpenChange }: VerifyModalProps) => {
                       Issue Date:
                     </span>
                     <p className="text-green-600">
-                      {verificationResult.issueDate}
+                      {new Date(verificationResult.issueDate).toLocaleString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        }
+                      )}
                     </p>
                   </div>
                   <div>
@@ -270,7 +302,14 @@ const VerifyModal = ({ open, onOpenChange }: VerifyModalProps) => {
                     <p className="text-green-600">
                       {new Date(
                         verificationResult.verificationDate
-                      ).toLocaleString()}
+                      ).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -280,6 +319,14 @@ const VerifyModal = ({ open, onOpenChange }: VerifyModalProps) => {
                   </span>
                   <p className="text-green-600 font-mono text-xs break-all">
                     {verificationResult.blockchainHash}
+                  </p>
+                </div>
+                <div>
+                  <span className="font-medium text-green-700">
+                    Wallet Hash:
+                  </span>
+                  <p className="text-green-600 font-mono text-xs break-all">
+                    {verificationResult.walletHash}
                   </p>
                 </div>
               </div>

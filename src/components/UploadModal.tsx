@@ -109,11 +109,17 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
       // You must send at least 1 ADA or 1 Lovelace output, so dummy send to self
       const usedAddress = await wallet.getChangeAddress();
       tx.sendLovelace(usedAddress, "1000000"); // 1 ADA (in Lovelace)
+      const timeStamp = new Date().toISOString();
+      const walletHash = sha256(new TextEncoder().encode(usedAddress));
 
-      // 3. Set metadata (label 721 is common for NFTs, but you can use any label)
-      tx.setMetadata(721, {
-        certificate: {
+      // 4. Add custom metadata
+      tx.setMetadata(674, {
+        verifychain: {
+          title,
+          type: documentType,
           hash: fileHash,
+          walletHash,
+          timestamp: timeStamp,
         },
       });
 
@@ -125,7 +131,7 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
       setTxHash(txHash);
       setUploadSuccess(true);
 
-      // 5. Generate and download certificate
+      // 5.
       // Generate certificate data
       const certificateData = {
         fileName: file.name,
@@ -133,9 +139,9 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
         documentType,
         fileHash,
         txHash,
-        timestamp: new Date().toISOString(),
-        walletAddress: usedAddress,
-        explorerUrl: `https://verifychain.vercel.app`, // Adjust for your blockchain
+        timestamp: timeStamp,
+        walletHash,
+        explorerUrl: `https://preprod.cardanoscan.io/transaction/${txHash}`, // Adjust for your blockchain
       };
 
       // Generate PDF certificate
