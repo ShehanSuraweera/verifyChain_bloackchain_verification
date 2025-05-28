@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"; // for Next.js App Router
 import { useState } from "react";
 import { CardanoWallet, useWallet } from "@meshsdk/react";

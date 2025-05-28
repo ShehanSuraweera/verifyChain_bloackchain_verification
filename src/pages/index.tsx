@@ -246,7 +246,8 @@ const Index = () => {
           <DialogHeader>
             <DialogTitle>Feature Coming Soon!</DialogTitle>
             <DialogDescription>
-              We're working hard to bring you this feature in a future update.
+              We&apos;re working hard to bring you this feature in a future
+              update.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-center py-4">

@@ -82,9 +82,9 @@ export const HowItWorks = () => {
                     3. We Record It on Cardano Blockchain
                   </h3>
                   <p className="text-gray-600 text-sm">
-                    The fingerprint is stored on Cardano's secure, decentralized
-                    network. This creates permanent proof that your document
-                    existed at that exact time.
+                    The fingerprint is stored on Cardano&apos;s secure,
+                    decentralized network. This creates permanent proof that
+                    your document existed at that exact time.
                   </p>
                 </div>
               </div>
@@ -117,8 +117,8 @@ export const HowItWorks = () => {
               What is Blockchain?
             </h3>
             <p className="text-gray-600 mb-4">
-              A blockchain is like a digital ledger that's maintained by
-              thousands of computers worldwide. It's:
+              A blockchain is like a digital ledger that&apos;s maintained by
+              thousands of computers worldwide. It&apos;s:
             </p>
             <ul className="space-y-3 text-gray-600">
               <li className="flex items-start gap-2">
@@ -170,7 +170,7 @@ export const HowItWorks = () => {
                   Identity Verification
                 </h4>
                 <p className="text-sm text-gray-600">
-                  It proves you're authorized to submit documents without
+                  It proves you&apos;re authorized to submit documents without
                   revealing your personal information.
                 </p>
               </div>
@@ -182,8 +182,8 @@ export const HowItWorks = () => {
                   Transaction Signing
                 </h4>
                 <p className="text-sm text-gray-600">
-                  It securely approves adding your document's fingerprint to the
-                  blockchain.
+                  It securely approves adding your document&apos;s fingerprint
+                  to the blockchain.
                 </p>
               </div>
             </div>

@@ -30,7 +30,7 @@ interface UploadModalProps {
 }
 
 const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
-  const { wallet, connected } = useWallet();
+  const { wallet } = useWallet();
   const [documentType, setDocumentType] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -118,12 +118,14 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
         description: `${title} has been uploaded. View transaction hash below.`,
         className: "bg-white",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Transaction failed.";
       console.error(err);
-      setError(err?.message || "Transaction failed.");
+      setError(errorMessage);
       toast({
         title: "Upload Failed",
-        description: err?.message || "Transaction failed.",
+        description: errorMessage || "Transaction failed.",
         variant: "destructive",
         className: "bg-white",
       });
@@ -339,7 +341,7 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
                 <li className="flex items-start gap-2">
                   •{" "}
                   <span>
-                    To verify later, you'll need either:
+                    To verify later, you&apos;ll need either:
                     <ul className="mt-1 ml-4 space-y-1">
                       <li>
                         - The original file <strong>+</strong> Transaction Hash
