@@ -113,6 +113,39 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
       setTxHash(txHash);
       setUploadSuccess(true);
 
+      // 5. Generate and download certificate
+      const certificateData = {
+        title,
+        documentType,
+        fileHash,
+        txHash,
+        timestamp: new Date().toISOString(),
+        walletAddress: usedAddress,
+      };
+
+      // Create downloadable JSON file
+      const certificateBlob = new Blob(
+        [JSON.stringify(certificateData, null, 2)],
+        {
+          type: "application/json",
+        }
+      );
+      const certificateUrl = URL.createObjectURL(certificateBlob);
+
+      // Create a temporary anchor element to trigger download
+      const a = document.createElement("a");
+      a.href = certificateUrl;
+      a.download = `certificate_${title.replace(/\s+/g, "_")}_${txHash.slice(
+        0,
+        8
+      )}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Clean up the URL object
+      setTimeout(() => URL.revokeObjectURL(certificateUrl), 100);
+
       toast({
         title: "Upload Successful",
         description: `${title} has been uploaded. View transaction hash below.`,
