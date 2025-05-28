@@ -121,23 +121,6 @@ const VerifyModal = ({ open, onOpenChange }: VerifyModalProps) => {
     }
 
     setIsVerifying(true);
-
-    // Simulated verification (optional: replace with real hash-based logic)
-    setTimeout(() => {
-      const mockResult = {
-        isValid: Math.random() > 0.3,
-        documentId,
-        title: "Software Engineering Certificate",
-        issuer: "Tech University",
-        issueDate: "2024-01-15",
-        verificationDate: new Date().toISOString(),
-        blockchainHash: "0x" + Math.random().toString(16).substr(2, 40),
-        status: Math.random() > 0.3 ? "Valid" : "Invalid",
-      };
-
-      setVerificationResult(mockResult);
-      setIsVerifying(false);
-    }, 2000);
   };
 
   const resetVerification = () => {
@@ -162,8 +145,7 @@ const VerifyModal = ({ open, onOpenChange }: VerifyModalProps) => {
             Verify Document
           </DialogTitle>
           <DialogDescription>
-            Enter a document ID or upload a certificate file to verify its
-            authenticity.
+            Upload a document file to verify its authenticity.
           </DialogDescription>
         </DialogHeader>
 

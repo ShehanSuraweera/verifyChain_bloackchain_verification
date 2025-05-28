@@ -337,14 +337,14 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
                 <p className="text-green-600 font-mono text-xs break-all">
                   {txHash}
                 </p>
-                <a
+                {/* <a
                   href={`https://preview.cexplorer.io/tx/${txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline text-sm"
                 >
                   View on Cardano Explorer
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -418,6 +418,12 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
                 </Button>
               )}
               <Button
+                onClick={resetForm}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Upload Another
+              </Button>
+              <Button
                 variant="outline"
                 onClick={() => {
                   resetForm();
@@ -425,12 +431,6 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
                 }}
               >
                 Close
-              </Button>
-              <Button
-                onClick={resetForm}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                Upload Another
               </Button>
             </div>
           </div>

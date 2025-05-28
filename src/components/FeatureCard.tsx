@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { LucideIcon } from "lucide-react";
 import { Clock } from "lucide-react";
+import { CardanoWallet, useWallet } from "@meshsdk/react";
 
 interface FeatureCardProps {
   icon: LucideIcon;
@@ -33,6 +34,7 @@ const FeatureCard = ({
   buttonText,
   implemented,
 }: FeatureCardProps) => {
+  const { connected } = useWallet(); // Get wallet connection status
   return (
     <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-blue-100 bg-white/80 backdrop-blur-sm relative">
       {/* Coming Soon Badge */}
@@ -43,6 +45,15 @@ const FeatureCard = ({
         >
           <Clock className="h-3 w-3 mr-1" />
           Coming Soon
+        </Badge>
+      )}
+
+      {!connected && title === "Upload & Issue" && (
+        <Badge
+          variant="secondary"
+          className="absolute top-4 right-4  text-red-800 "
+        >
+          <CardanoWallet />
         </Badge>
       )}
 
@@ -76,7 +87,9 @@ const FeatureCard = ({
             <TooltipTrigger asChild>
               <Button
                 onClick={action}
-                disabled={!implemented}
+                disabled={
+                  !implemented || (!connected && title === "Upload & Issue")
+                }
                 className={`w-full transition-colors ${
                   implemented
                     ? "bg-blue-600 hover:bg-blue-700"
