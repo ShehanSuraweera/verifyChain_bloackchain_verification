@@ -18,11 +18,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Upload, FileCheck, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Upload,
+  FileCheck,
+  CheckCircle,
+  AlertCircle,
+  Download,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@meshsdk/react";
 import { Transaction } from "@meshsdk/core";
 import { sha256 } from "js-sha256";
+import { generatePDFCertificate } from "@/lib/functions";
 
 interface UploadModalProps {
   open: boolean;
@@ -41,6 +48,7 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
   const [error, setError] = useState("");
   const { toast } = useToast();
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -54,6 +62,9 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
   };
 
   const resetForm = () => {
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl);
+    }
     setDocumentType("");
     setTitle("");
     setDescription("");
@@ -62,6 +73,7 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
     setTxHash("");
     setError("");
     setUploadSuccess(false);
+    setPdfUrl(null);
   };
 
   const hashAndSend = async (e: React.FormEvent) => {
@@ -114,37 +126,25 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
       setUploadSuccess(true);
 
       // 5. Generate and download certificate
+      // Generate certificate data
       const certificateData = {
+        fileName: file.name,
         title,
         documentType,
         fileHash,
         txHash,
         timestamp: new Date().toISOString(),
         walletAddress: usedAddress,
+        explorerUrl: `https://verifychain.vercel.app`, // Adjust for your blockchain
       };
 
-      // Create downloadable JSON file
-      const certificateBlob = new Blob(
-        [JSON.stringify(certificateData, null, 2)],
-        {
-          type: "application/json",
-        }
-      );
-      const certificateUrl = URL.createObjectURL(certificateBlob);
+      // Generate PDF certificate
+      const pdfBytes = await generatePDFCertificate(certificateData);
 
-      // Create a temporary anchor element to trigger download
-      const a = document.createElement("a");
-      a.href = certificateUrl;
-      a.download = `certificate_${title.replace(/\s+/g, "_")}_${txHash.slice(
-        0,
-        8
-      )}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      // Clean up the URL object
-      setTimeout(() => URL.revokeObjectURL(certificateUrl), 100);
+      // Create URL for the certificate
+      const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(pdfBlob);
+      setPdfUrl(url);
 
       toast({
         title: "Upload Successful",
@@ -397,6 +397,26 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
             </div>
 
             <div className="flex justify-end space-x-2">
+              {/* Add this in your success section, near the other buttons */}
+              {pdfUrl && (
+                <Button
+                  onClick={() => {
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = pdfUrl;
+                    downloadLink.download = `Certificate_${title.replace(
+                      /\s+/g,
+                      "_"
+                    )}.pdf`;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                  }}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Certificate
+                </Button>
+              )}
               <Button
                 variant="outline"
                 onClick={() => {
