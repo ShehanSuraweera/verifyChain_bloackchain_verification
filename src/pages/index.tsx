@@ -22,7 +22,7 @@ import StatsSection from "@/components/StatsSection";
 import UploadModal from "@/components/UploadModal";
 import VerifyModal from "@/components/VerifyModal";
 import { HowItWorks } from "@/components/HowItWorks";
-import { CardanoWallet, useWallet } from "@meshsdk/react";
+import { CardanoWallet } from "@meshsdk/react";
 import {
   Dialog,
   DialogContent,
