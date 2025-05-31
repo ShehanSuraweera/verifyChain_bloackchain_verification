@@ -50,15 +50,12 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = e.target.files?.[0];
-    if (selected) {
-      setFile(selected);
-      setHash("");
-      setTxHash("");
-      setError("");
-      setUploadSuccess(false);
-    }
+  const handleFileChange = (file: File) => {
+    setFile(file);
+    setHash("");
+    setTxHash("");
+    setError("");
+    setUploadSuccess(false);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -73,8 +70,7 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles && droppedFiles.length > 0) {
       const file = droppedFiles[0];
-      setFile(file);
-      handleFileChange({ target: { files: [file] } } as any);
+      handleFileChange(file);
     }
   };
 
@@ -277,7 +273,12 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
                 <input
                   type="file"
                   id="file"
-                  onChange={handleFileChange}
+                  onChange={(e) => {
+                    const selectedFile = e.target.files?.[0];
+                    if (selectedFile) {
+                      handleFileChange(selectedFile);
+                    }
+                  }}
                   className="hidden"
                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                 />
