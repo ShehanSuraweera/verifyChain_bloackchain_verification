@@ -61,6 +61,23 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
     }
   };
 
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const droppedFiles = e.dataTransfer.files;
+    if (droppedFiles && droppedFiles.length > 0) {
+      const file = droppedFiles[0];
+      setFile(file);
+      handleFileChange({ target: { files: [file] } } as any);
+    }
+  };
+
   const resetForm = () => {
     if (pdfUrl) {
       URL.revokeObjectURL(pdfUrl);
@@ -206,13 +223,16 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="documentType">Document Type *</Label>
+                <Label htmlFor="documentType">
+                  Document Type <span className="text-red-600">*</span>
+                </Label>
                 <Select value={documentType} onValueChange={setDocumentType}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select document type" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     <SelectItem value="certificate">Certificate</SelectItem>
+                    <SelectItem value="image">Image</SelectItem>
                     <SelectItem value="news">News Article</SelectItem>
                     <SelectItem value="official">Official Document</SelectItem>
                     <SelectItem value="report">Report</SelectItem>
@@ -222,7 +242,9 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="title">Document Title *</Label>
+                <Label htmlFor="title">
+                  Document Title <span className="text-red-600">*</span>
+                </Label>
                 <Input
                   id="title"
                   value={title}
@@ -244,8 +266,14 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="file">Upload File *</Label>
-              <div className="border-2 border-dashed border-blue-200 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+              <Label htmlFor="file">
+                Upload File <span className="text-red-600">*</span>
+              </Label>
+              <div
+                className="border-2 border-dashed border-blue-200 rounded-lg p-6 text-center hover:border-blue-400 transition-colors"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+              >
                 <input
                   type="file"
                   id="file"
@@ -293,7 +321,7 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
             </div>
           </form>
         ) : (
-          <div className="space-y-6">
+          <div className="max-h-[80vh] overflow-y-auto space-y-6 p-4 ">
             <div className="text-center">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
               <Badge
@@ -343,14 +371,16 @@ const UploadModal = ({ open, onOpenChange }: UploadModalProps) => {
                 <p className="text-green-600 font-mono text-xs break-all">
                   {txHash}
                 </p>
-                {/* <a
-                  href={`https://preview.cexplorer.io/tx/${txHash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  View on Cardano Explorer
-                </a> */}
+                <div className="flex justify-end">
+                  <a
+                    href={`https://preprod.cardanoscan.io/transaction/${txHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline text-xs italic mt-2 "
+                  >
+                    View on Cardano Explorer
+                  </a>
+                </div>
               </div>
             </div>
 
